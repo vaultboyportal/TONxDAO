@@ -28,7 +28,7 @@ class Task:
                 coins = get_info_coin(self.tokens[i])
                 self.info[i]['energy'] = energy
                 print(f"{dt_string}   Real-time Check: (Energy:{energy}, Coins:{coins})")
-                if energy <= 10:
+                if energy < 5:
                     print(f"Energy is too low, stopping mining for this token.")
                     os.execl(sys.executable, *sys.orig_argv)
                     time.sleep(10)  # Check every 10 seconds

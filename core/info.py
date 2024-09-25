@@ -26,7 +26,7 @@ def get_info(token):
         "https://app.production.tonxdao.app/api/v1/profile"
     )
     auth_headers = headers(token)
-    response = requests.get(url=url, headers=auth_headers, timeout=20)
+    response = requests.get(url=url, headers=auth_headers)
     data = response.json()
     full_name = data.get('full_name', 'No name provided')
     coins = data.get('coins', 'No coins provided')
@@ -38,9 +38,8 @@ def get_info_coin(token):
         "https://app.production.tonxdao.app/api/v1/profile"
     )
     auth_headers = headers(token)
-    response = requests.get(url=url, headers=auth_headers, timeout=20)
+    response = requests.get(url=url, headers=auth_headers)
     data = response.json()
-    full_name = data.get('full_name', 'No name provided')
     coins = data.get('coins', 'No coins provided')
     return coins
 
@@ -49,7 +48,7 @@ def get_info_energy(token):
         "https://app.production.tonxdao.app/api/v1/profile"
     )
     auth_headers = headers(token)
-    response = requests.get(url=url, headers=auth_headers, timeout=20)
+    response = requests.get(url=url, headers=auth_headers)
     data = response.json()
     energy = data.get('energy', 'No energy provided')
     return energy
@@ -59,7 +58,7 @@ def get_user_dao(token):
         "https://app.production.tonxdao.app/api/v1/dao_users"
     )
     auth_headers = headers(token)
-    response = requests.get(url=url, headers=auth_headers, timeout=20)
+    response = requests.get(url=url, headers=auth_headers)
     data = response.json()
     return data
 
@@ -68,7 +67,7 @@ def get_token(token):
         "https://app.production.tonxdao.app/api/v1/centrifugo-token"
     )
     auth_headers = headers(token)
-    response = requests.get(url=url, headers=auth_headers, timeout=20)
+    response = requests.get(url=url, headers=auth_headers)
     data = response.json()["token"]
     return data
 

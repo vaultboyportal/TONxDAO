@@ -9,7 +9,9 @@ def get_token(data):
     payload = {"initData":data}
     
     try:
-        response = requests.post(url=url, headers=headers(), json=payload, timeout=20)
+        response = requests.post(url=url, headers=headers(), json=payload)
+        if response.status_code != 200:
+            return False
         data = response.json()
         token = data["access_token"]
         return token

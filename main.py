@@ -28,6 +28,18 @@ class Game:
         else:
             os.system('clear')  # For Linux/Unix
     
+    def check_and_mine(self,token,info):
+        task = Task([token])
+        for attempt in range(5):
+            energy = get_info_energy(token=token)
+            print(f"Attempt {attempt +1}: Energy:{energy}")
+            if energy >= 5:
+                print(f'Starting task for: {info}')
+                print(f"Process Mining...")
+                task.start_mining()
+                return True
+            time.sleep(5)
+        return False
                     
     def main(self):
         while True:
@@ -46,16 +58,12 @@ class Game:
                     print("===============================")
                     print(f"{dt_string}")
                     print(f"Info: {info}")
-                    energy = get_info_energy(token=token)
-                    print(f"Energy: {energy}")
-                    task = Task([token])
-                    if energy >= 10:
-                        print(f'Starting task for: {info}')
-                        print(f"Process Mining...")
-                        task.start_mining()
+                    
+                    if self.check_and_mine(token, info):
+                        print("Mining successful.")
  
                     else:
-                        print(f"Energy is too low, skipping to next user.")
+                        print(f"Energy is too low after 5 attempts, skipping to next user.")
                         print(f"Info: {info}")
                         print("===============================")
                     
