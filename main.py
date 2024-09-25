@@ -30,7 +30,7 @@ class Game:
     
     def check_and_mine(self,token,info):
         task = Task([token])
-        for attempt in range(5):
+        for attempt in range(10):
             energy = get_info_energy(token=token)
             print(f"Attempt {attempt +1}: Energy:{energy}")
             if energy >= 5:
