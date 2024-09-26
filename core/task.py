@@ -4,6 +4,7 @@ from core.headers import headers
 from core.info import get_user_dao, get_token, get_username, get_info_energy, get_info_coin, config
 from datetime import datetime
 
+energy_global = None
 class Task:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -74,6 +75,8 @@ class Task:
 
     async def start_async_mining(self, account_index):
         uri = 'wss://ws.production.tonxdao.app/ws'
+        now = datetime.now()
+        dt_string = now.strftime("%d-%m-%Y %H:%M:%S")
         async with websockets.connect(uri) as websocket:
             while True:
                 await websocket.send(self.auth_message(account_index))
@@ -86,7 +89,16 @@ class Task:
                 for _ in range(config('number_of_display_message', 2)):
                     await websocket.send(self.display_message(account_index))
                     response = await websocket.recv()
+                    response_data = json.loads(response)
+                    if 'rpc' in response_data:
+                        global energy_global
+                        energy_global = response_data["rpc"]["data"]["energy"]
+                        print(f"{dt_string} Energy: {energy_global}")
                     self.apply_changes(account_index, json.loads(response))
+                    
+                if energy_global < 5:
+                    print(f"Energy is too low ({energy_global}). Stopping mining for this token.")
+                    return False 
 
     def run_websocket(self, account_index):
         asyncio.run(self.start_async_mining(account_index))
@@ -99,9 +111,11 @@ class Task:
                     for future in futures:
                         future.result()
                         # print(f"future:{future}") 
-                input()
-                # time.sleep(1)
-                # self.clear_terminal()
+                if energy_global > 5:
+                    input()
+                else:
+                    return False
+
             except KeyboardInterrupt:
                 break
             except Exception as E:
@@ -111,9 +125,9 @@ class Task:
 
     def start_mining(self):
         # Start a thread to check energy in real-time
-        energy_thread = threading.Thread(target=self.check_energy)
-        energy_thread.daemon = True  # This allows the thread to exit when the main program does
-        energy_thread.start()
+        # energy_thread = threading.Thread(target=self.check_energy)
+        # energy_thread.daemon = True  # This allows the thread to exit when the main program does
+        # energy_thread.start()
         
         for i in range(len(self.tokens)):
             self.user_dao[i] = get_user_dao(self.tokens[i])

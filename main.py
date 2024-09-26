@@ -30,16 +30,11 @@ class Game:
     
     def check_and_mine(self,token,info):
         task = Task([token])
-        for attempt in range(10):
-            energy = get_info_energy(token=token)
-            print(f"Attempt {attempt +1}: Energy:{energy}")
-            if energy >= 5:
-                print(f'Starting task for: {info}')
-                print(f"Process Mining...")
-                task.start_mining()
-                return True
-            time.sleep(5)
-        return False
+        mining_result = task.start_mining()
+        if not mining_result:
+            print(f"Mining stopped for: {info} due to low energy.")
+            return False
+        return True
                     
     def main(self):
         while True:
@@ -50,7 +45,6 @@ class Game:
             
             for data_entry in data:
                 token = get_token(data=data_entry)
-                # print(f"Token:{token}")
                 if token:
                     tokens.append(token)
                     info = get_info(token=token)
@@ -63,7 +57,7 @@ class Game:
                         print("Mining successful.")
  
                     else:
-                        print(f"Energy is too low after 5 attempts, skipping to next user.")
+                        print(f"Mining stopped due to low energy, moving to next user.")
                         print(f"Info: {info}")
                         print("===============================")
                     
